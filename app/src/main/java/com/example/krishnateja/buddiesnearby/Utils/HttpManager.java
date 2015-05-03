@@ -13,8 +13,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import javax.net.ssl.HttpsURLConnection;
-
 /**
  * Created by krishnateja on 5/3/2015.
  */
@@ -32,78 +30,60 @@ public class HttpManager {
             } else {
                 url = new URL(params.getURI());
             }
-            if (!params.getProtocol().equals("https")) {
-                HttpURLConnection con = null;
-
-
-                con = (HttpURLConnection) url.openConnection();
-
-
-                con.setRequestMethod(params.getMethod());
-                OutputStreamWriter writer = null;
-
-                writer = new OutputStreamWriter(con.getOutputStream());
-
-
-                writer.write(params.getEncodedParams());
-
-
-                writer.flush();
-
-
-                BufferedReader reader = null;
-                StringBuilder sb = new StringBuilder();
-
-                reader = new BufferedReader(new InputStreamReader(
-                        con.getInputStream()));
-
-
-                String line;
-
-                while (reader != null && (line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-                Log.d(TAG, sb.toString());
-                return sb.toString();
-            } else {
-                HttpsURLConnection con = null;
-
-
-                con = (HttpsURLConnection) url.openConnection();
-
-
-                con.setRequestMethod(params.getMethod());
-                OutputStreamWriter writer = null;
-
-                writer = new OutputStreamWriter(con.getOutputStream());
-
-
-                writer.write(params.getEncodedParams());
-
-
-                writer.flush();
-
-
-                BufferedReader reader = null;
-                StringBuilder sb = new StringBuilder();
-
-                reader = new BufferedReader(new InputStreamReader(
-                        con.getInputStream()));
-
-
-                String line;
-
-                while (reader != null && (line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-                Log.d(TAG, sb.toString());
-                return sb.toString();
-            }
-
-        } catch (Exception e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
-            return null;
         }
+        HttpURLConnection con = null;
+        try {
+            con = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            con.setRequestMethod(params.getMethod());
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        }
+
+        if (params.getMethod() == "POST") {
+            OutputStreamWriter writer = null;
+            try {
+                writer = new OutputStreamWriter(con.getOutputStream());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            try {
+                writer.write(params.getEncodedParams());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                writer.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        BufferedReader reader = null;
+        StringBuilder sb = new StringBuilder();
+        try {
+            reader = new BufferedReader(new InputStreamReader(
+                    con.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String line;
+        try {
+            while (reader != null && (line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, sb.toString());
+        return sb.toString();
+
 
     }
 }

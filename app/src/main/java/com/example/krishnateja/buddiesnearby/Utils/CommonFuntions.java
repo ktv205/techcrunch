@@ -90,7 +90,7 @@ public class CommonFuntions {
                     }
                 });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "friends");
+        parameters.putString("fields", "me/friends");
         request.setParameters(parameters);
         request.executeAsync();
         return jsonString[0];
