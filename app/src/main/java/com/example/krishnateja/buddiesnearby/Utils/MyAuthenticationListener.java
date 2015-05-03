@@ -1,5 +1,6 @@
 package com.example.krishnateja.buddiesnearby.Utils;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.krishnateja.buddiesnearby.Activities.ChatActivity;
@@ -20,9 +21,11 @@ import org.json.JSONObject;
 public class MyAuthenticationListener implements LayerAuthenticationListener {
 
     private ChatActivity main_activity;
+    private Context context;
 
-    public MyAuthenticationListener(ChatActivity ma) {
+    public MyAuthenticationListener(ChatActivity ma, Context context) {
         main_activity = ma;
+        this.context = context;
     }
 
     //Called after layerClient.authenticate() executes
@@ -35,7 +38,7 @@ public class MyAuthenticationListener implements LayerAuthenticationListener {
     // - The Nonce returned in this function will expire after 10 minutes, after which you will need
     //   to call
     public void onAuthenticationChallenge(final LayerClient client, final String nonce) {
-        final String mUserId = ChatActivity.getUserID();
+        final String mUserId = ChatActivity.getUserID(context);
 
         //Note: This Layer Authentication Service is for TESTING PURPOSES ONLY
         //When going into production, you will need to create your own web service

@@ -1,16 +1,21 @@
 package com.example.krishnateja.buddiesnearby.Activities;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.krishnateja.buddiesnearby.Models.AppConstants;
+import com.example.krishnateja.buddiesnearby.Models.User;
 import com.example.krishnateja.buddiesnearby.R;
+import com.example.krishnateja.buddiesnearby.Utils.CommonFuntions;
 import com.example.krishnateja.buddiesnearby.Utils.ConversationViewController;
 import com.example.krishnateja.buddiesnearby.Utils.MyAuthenticationListener;
 import com.example.krishnateja.buddiesnearby.Utils.MyConnectionListener;
 import com.layer.sdk.LayerClient;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -21,8 +26,8 @@ import java.util.UUID;
 public class ChatActivity extends AppCompatActivity {
     //Replace this with your App ID from the Layer Developer page.
     //Go http://developer.layer.com, click on "Dashboard" and select "Info"
-    public static String Layer_App_ID = "LAYER_APP_ID";
-
+    public static String Layer_App_ID = "aa740272-f103-11e4-9a1b-d4f483001c50";
+    //public static String Provider_ID = "aa72d870-f103-11e4-9ae1-d4f483001c50";
     //Optional: Enable Push Notifications
     // Layer uses Google Cloud Messaging for Push Notifications. Go to
     // https://developer.layer.com/docs/guides/android#push-notification
@@ -30,7 +35,7 @@ public class ChatActivity extends AppCompatActivity {
     // an invalid Project Number is used here, the Layer SDK will function, but
     // users will not receive Notifications when the app is closed or in the
     // background).
-    public static String GCM_Project_Number = "00000";
+    public static String GCM_Project_Number = "400221714187";
 
 
     //Global variables used to manage the Layer Client and the conversations in this app
@@ -40,7 +45,8 @@ public class ChatActivity extends AppCompatActivity {
     //Layer connection and authentication callback listeners
     private MyConnectionListener connectionListener;
     private MyAuthenticationListener authenticationListener;
-
+    private ArrayList<User> userArrayList;
+    private Context context;
     //onCreate is called on App Start
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,12 +57,15 @@ public class ChatActivity extends AppCompatActivity {
 
 
         //Create the callback listeners
-
+        context = getApplicationContext();
         if(connectionListener == null)
-            connectionListener = new MyConnectionListener(this);
+            connectionListener = new MyConnectionListener(this,context);
 
         if(authenticationListener == null)
-            authenticationListener = new MyAuthenticationListener(this);
+            authenticationListener = new MyAuthenticationListener(this,context);
+
+        //set application context to get the FB ID stored in shared prefs
+        userArrayList = getIntent().getParcelableArrayListExtra(AppConstants.InAppConstants.FRIENDS);
     }
 
     //onResume is called on App Start and when the app is brought to the foreground
@@ -154,18 +163,20 @@ public class ChatActivity extends AppCompatActivity {
     // create a new one, as long as all user ids are unique. For demonstration purposes, we are
     // making the assumption that this App will be run simultaneously on a Simulator and on a
     // Device, and assign the User ID based on the runtime environment.
-    public static String getUserID(){
-        if(Build.FINGERPRINT.startsWith("generic"))
-            return "Simulator";
-
-        return "Device";
+    public static String getUserID(Context context){
+        //if(CommonFuntions.fb_user_id == null)
+            return context.getSharedPreferences(AppConstants.AppSharedPref.USER_ID,
+                    context.MODE_PRIVATE).toString();
     }
 
-    //By default, create a conversationView between these 3 participants
-    public static List<String> getAllParticipants(){
-        return Arrays.asList("Device", "Simulator", "Dashboard");
+    //By default, create a conversationView between these  participants
+    public List<String> getAllParticipants(){
+        ArrayList<String> ids = new ArrayList<>();
+        for (User u:userArrayList){
+            ids.add(u.get_id());
+        }
+        return ids;
     }
-
     //Once the user has successfully authenticated, begin the conversationView
     public void onUserAuthenticated(){
 

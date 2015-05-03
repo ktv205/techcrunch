@@ -29,7 +29,8 @@ public class AuthActivity extends AppCompatActivity {
         FacebookFragment facebookFragment=new FacebookFragment();
         FragmentManager fragmentManager=getSupportFragmentManager();
         FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.activity_auth_main_linear_layout,facebookFragment,AppConstants.InAppConstants.FACEBOOK_TAG);
+        fragmentTransaction.add(R.id.activity_auth_main_linear_layout,
+                facebookFragment,AppConstants.InAppConstants.FACEBOOK_TAG);
         fragmentTransaction.commit();
     }
 }
