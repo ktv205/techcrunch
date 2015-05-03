@@ -81,6 +81,7 @@ public class HelperActivity extends AppCompatActivity implements
                     users=new ArrayList<>();
                     User user=new User();
                     user.set_id("989010337783497");
+                    user.set_name("Krishna Teja Velagapudi");
                     users.add(user);
                 }
                 Intent intent=new Intent(this,ChatActivity.class);

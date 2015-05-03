@@ -9,9 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.krishnateja.buddiesnearby.Activities.DummyActivity;
-
 import com.example.krishnateja.buddiesnearby.Models.AppConstants;
 import com.example.krishnateja.buddiesnearby.Models.RequestParams;
 
@@ -107,8 +104,6 @@ public class FacebookFragment extends Fragment {
 
             Bundle parameters = new Bundle();
             parameters.putString("fields", "id,name,link,picture");
-
-            getActivity().startActivity(new Intent(getActivity(), DummyActivity.class));
         }
 
         @Override

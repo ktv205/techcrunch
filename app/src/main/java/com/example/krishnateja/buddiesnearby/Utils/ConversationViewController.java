@@ -3,15 +3,20 @@ package com.example.krishnateja.buddiesnearby.Utils;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.krishnateja.buddiesnearby.Activities.ChatActivity;
+import com.example.krishnateja.buddiesnearby.Models.User;
 import com.example.krishnateja.buddiesnearby.R;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.changes.LayerChange;
@@ -132,6 +137,7 @@ private void sendMessage(String text) {
         //Formats the push notification that the other participants will receive
         Map<String, String> metadata = new HashMap<>();
         metadata.put("layer-push-message", ma.getUserID() + ": " + text);
+        metadata.put("screen-name", ma.getUserName());
         message.setMetadata(metadata);
 
         //Sends the message
@@ -186,6 +192,30 @@ private void drawConversation(){
         for (int i = 0; i < allMsgs.size(); i++) {
         addMessageToView(allMsgs.get(i));
         }
+        //draw user containers
+        if(ma.getParticipants() != null){
+            for(User u: ma.getParticipants()){
+                LayoutInflater inflater = (LayoutInflater) ma.getApplicationContext().getSystemService
+                        (Context.LAYOUT_INFLATER_SERVICE);
+                View rootView = inflater.inflate(R.layout.name_container,topBar);
+                final TextView tv = (TextView)rootView.findViewById(R.id.myImageViewText);
+                tv.setText(u.get_name());
+                tv.setTag(u.get_id());
+                ImageView iv = (ImageView)rootView.findViewById(R.id.myImageView);
+                iv.setTag(u.get_id());
+                iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int count = ma.removeUser(view.getTag().toString());
+                        ((ViewGroup) view.getParent()).removeView(tv);
+                        ((ViewGroup) view.getParent()).removeView(view);
+                        if(count == 0){
+                            ma.finish();
+                        }
+                    }
+                });
+            }
+        }
 
         //After redrawing, force the scroll view to the bottom (most recent message)
         conversationScroll.post(new Runnable() {
@@ -195,7 +225,7 @@ public void run() {
         }
         });
         }
-        }
+}
 
 //Creates a GUI element (header and body) for each Message
 private void addMessageToView(Message msg){
@@ -268,7 +298,7 @@ private void setTopBarColor(float red, float green, float blue){
 
 public String getInitialMessage(){
         return "Hey, everyone! This is your friend, " +
-                ma.getUserID();
+                ma.getUserName();
         }
 
 
@@ -305,6 +335,7 @@ public void onEventMainThread(LayerChangeEvent event) {
 
         switch (change.getChangeType()){
         case INSERT:
+
         break;
 
         case UPDATE:
