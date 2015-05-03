@@ -131,7 +131,7 @@ private void sendMessage(String text) {
 
         //Formats the push notification that the other participants will receive
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("layer-push-message", ChatActivity.getUserID(ma.getApplicationContext()) + ": " + text);
+        metadata.put("layer-push-message", ma.getUserID() + ": " + text);
         message.setMetadata(metadata);
 
         //Sends the message
@@ -215,7 +215,7 @@ private void addMessageToView(Message msg){
         //If we have already added this message to the GUI, skip it
         if(!allMessages.contains(msgId)) {
         //Build the GUI element and save it
-        MessageView msgView = new MessageView(conversationView, msg);
+        MessageView msgView = new MessageView(conversationView, msg, ma);
         allMessages.put(msgId, msgView);
         }
         }
@@ -268,7 +268,7 @@ private void setTopBarColor(float red, float green, float blue){
 
 public String getInitialMessage(){
         return "Hey, everyone! This is your friend, " +
-                ChatActivity.getUserID(ma.getApplicationContext());
+                ma.getUserID();
         }
 
 

@@ -28,8 +28,11 @@ public class MessageView {
 
     private LinearLayout messageDetails;
 
+// reference to the chat activity
+    private ChatActivity ma;
+
     //Takes the Layout parent object and message
-    public MessageView(LinearLayout parent, Message msg){
+    public MessageView(LinearLayout parent, Message msg, ChatActivity ma){
         myParent = parent;
 
         //The first part of each message will include the sender and status
@@ -50,6 +53,8 @@ public class MessageView {
         //statusImage = new ImageView(parent.getContext());
         statusImage = createStatusImage(msg);//statusImage.setImageResource(R.drawable.sent);
         messageDetails.addView(statusImage);
+
+        this.ma = ma;
 
         //Populates the text views
         UpdateMessage(msg);
@@ -87,7 +92,7 @@ public class MessageView {
     private Message.RecipientStatus getMessageStatus(Message msg) {
 
         //If we didn't send the message, we already know the status - we have read it
-        if (!msg.getSentByUserId().equalsIgnoreCase(ChatActivity.getUserID(context)))
+        if (!msg.getSentByUserId().equalsIgnoreCase(ma.getUserID()))
             return Message.RecipientStatus.READ;
 
         //Assume the message has been sent
@@ -95,11 +100,11 @@ public class MessageView {
 
         //Go through each user to check the status, in this case we check each user and prioritize so
         // that we return the highest status: Sent -> Delivered -> Read
-        for (int i = 0; i < ChatActivity.getAllParticipants().size(); i++) {
+        for (int i = 0; i < ma.getAllParticipants().size(); i++) {
 
             //Don't check the status of the current user
-            String participant = ChatActivity.getAllParticipants().get(i);
-            if (participant.equalsIgnoreCase(ChatActivity.getUserID(context)))
+            String participant = ma.getAllParticipants().get(i);
+            if (participant.equalsIgnoreCase(ma.getUserID()))
                 continue;
 
             if (status == Message.RecipientStatus.SENT) {
