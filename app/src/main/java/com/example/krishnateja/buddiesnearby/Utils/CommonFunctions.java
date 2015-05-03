@@ -42,9 +42,6 @@ public class CommonFunctions {
                       jsonString[0] =jsonObject.toString();
                 storeUserId(jsonString[0],context);
                 Log.d(TAG, jsonObject.toString());
-                RequestParams params=CreateSendRequestParams(jsonString[0]);
-                new SendDataAsyncTask().execute(params);
-
             }
         });
         String NAME = "name";
@@ -80,50 +77,36 @@ public class CommonFunctions {
             fb_user_email = json.get("email").toString();
             SharedPreferences sp = context.getSharedPreferences(AppConstants.AppSharedPref.NAME,
                     context.MODE_PRIVATE);
+
             SharedPreferences.Editor editor=sp.edit();
             editor.putString(AppConstants.AppSharedPref.USER_ID, fb_user_id);
             editor.putString(AppConstants.AppSharedPref.USER_NAME, fb_user_name);
             editor.putString(AppConstants.AppSharedPref.USER_PIC, fb_user_pic);
             editor.putString(AppConstants.AppSharedPref.USER_EMAIL, fb_user_email);
             editor.commit();
+            String[] paths={"safety","public","index.php","adduser",fb_user_id,fb_user_name};
+            RequestParams params = new RequestParams();
+            Uri.Builder url = new Uri.Builder();
+            url.scheme(AppConstants.ServerVariables.SCHEME)
+                    .authority(AppConstants.ServerVariables.AUTHORITY);
+            for (String path : paths) {
+                url.appendPath(path);
+            }
+            url.build();
+            params.setURI(url.toString());
+            params.setMethod("GET");
+            new SendDataAsyncTask().execute(params);
+
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
     }
 
-    public static String getUserFriends(AccessToken accessToken,final Context context){
-        final String[] jsonString = new String[1];
-        GraphRequest request = GraphRequest.newMyFriendsRequest(
-                accessToken,new GraphRequest.GraphJSONArrayCallback() {
-                    @Override
-                    public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
-                        if(jsonArray!=null){
-                            jsonString[0] =jsonArray.toString();
-                            Log.d(TAG,jsonString[0]);
-                            storeFriendsUserId(jsonString[0]);
-                            Log.d(TAG, jsonArray.toString());
-                            RequestParams params=CreateSendRequestParams(jsonString[0]);
-                            new SendDataAsyncTask().execute(params);
 
 
-                        }else{
-                            Log.d(TAG,"json array is null");
-                        }
-                    }
-                });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "me/friends");
-        request.setParameters(parameters);
-        request.executeAsync();
-        return jsonString[0];
-
-
-    }
-
-    public static RequestParams CreateSendRequestParams(String jsonString){
-        return null;
-    }
 
     public static boolean isMyServiceRunning(Class<?> serviceClass,
                                              Context context) {
@@ -139,26 +122,6 @@ public class CommonFunctions {
         return running;
     }
 
-    public static void storeFriendsUserId(String jsonArray){
-        try {
-            JSONArray array=new JSONArray(jsonArray);
-            JSONObject object= (JSONObject) array.get(0);
-
-            JSONObject friends=(JSONObject)object.getJSONObject("friends");
-            JSONObject paging=friends.getJSONObject("paging");
-            String url=paging.getString("next");
-            RequestParams params=new RequestParams();
-            params.setMethod("GET");
-            params.setURI(url);
-            params.setProtocol("https");
-            Log.d(TAG, HttpManager.sendUserData(params));
-
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static boolean checkIfGCMInfoIsSent(Context context) {
         if (checkPlayServices(context)) {
@@ -189,12 +152,7 @@ public class CommonFunctions {
         int resultCode = GooglePlayServicesUtil
                 .isGooglePlayServicesAvailable(context);
         if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                // GooglePlayServicesUtil.getErrorDialog(resultCode, mContext,
-                // PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                // finish();
-            }
+
             return false;
         } else {
             return true;
@@ -237,9 +195,7 @@ public class CommonFunctions {
         RequestParams params = new RequestParams();
         Uri.Builder url = new Uri.Builder();
         url.scheme(AppConstants.ServerVariables.SCHEME)
-                .authority(AppConstants.ServerVariables.AUTHORITY).build();
-        url.appendPath(AppConstants.ServerVariables.PUBLIC);
-        url.appendPath(AppConstants.ServerVariables.INDEX);
+                .authority(AppConstants.ServerVariables.AUTHORITY);
         for (String s : paths) {
             url.appendPath(s);
         }
@@ -248,6 +204,8 @@ public class CommonFunctions {
         params.setMethod("GET");
         return params;
     }
+
+
 
 
 

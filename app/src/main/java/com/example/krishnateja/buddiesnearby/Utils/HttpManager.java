@@ -24,12 +24,8 @@ public class HttpManager {
         URL url = null;
 
         try {
-            if (params.getMethod() == "GET") {
+
                 url = new URL(params.getURI());
-                Log.d(TAG, params.getURI());
-            } else {
-                url = new URL(params.getURI());
-            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

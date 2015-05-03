@@ -19,7 +19,7 @@ public class SendDataAsyncTask extends AsyncTask<RequestParams, Void, String> {
     @Override
     protected String doInBackground(RequestParams... params) {
         Log.d(TAG, "doInBackGround");
-        return null;
+        return HttpManager.sendUserData(params[0]);
     }
 
     @Override

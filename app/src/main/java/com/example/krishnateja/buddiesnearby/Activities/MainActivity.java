@@ -13,23 +13,29 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.example.krishnateja.buddiesnearby.Fragments.LeftDrawerFragment;
 import com.example.krishnateja.buddiesnearby.Fragments.FriendsFragment;
 import com.example.krishnateja.buddiesnearby.Fragments.MapViewFragment;
 import com.example.krishnateja.buddiesnearby.Fragments.RightDrawerFragment;
+import com.example.krishnateja.buddiesnearby.Models.AppConstants;
+import com.example.krishnateja.buddiesnearby.Models.User;
 import com.example.krishnateja.buddiesnearby.R;
+import com.example.krishnateja.buddiesnearby.Utils.SendLocationsAsyncTask;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements SendLocationsAsyncTask.GetOtherUsersLocations {
 
     private LeftDrawerFragment mLeftDrawerFragment;
     private RightDrawerFragment mRightDrawerFragment;
-    private FriendsFragment mMainFragment;
-
+    private MapViewFragment mMapViewFragment;
+    private FriendsFragment mFriendsFragment;
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private Context mApplicationContext;
@@ -40,11 +46,15 @@ public class MainActivity extends AppCompatActivity {
     private int mSelection = 0;
     private int mFlag = 0;
     private static final int DONE = 2;
+    private ArrayList<User> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mMapViewFragment=new MapViewFragment();
+        mFriendsFragment=new FriendsFragment();
         setContentView(R.layout.activity_main);
+        users=new ArrayList<>();
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
         mLeftDrawerFragment = (LeftDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.main_left_drawer_fragment);
@@ -106,6 +116,19 @@ public class MainActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
+    @Override
+    public void getData(int code, ArrayList<User> arrayList) {
+        users=arrayList;
+        Log.d(TAG,"here" );
+        if(mMapViewFragment.isHidden()){
+            Log.d(TAG,"hidden");
+        }else{
+            Log.d(TAG,"not hidden");
+        }
+        mMapViewFragment.getData(arrayList);
+        mFriendsFragment.getData(arrayList);
+    }
+
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
         public ScreenSlidePagerAdapter(FragmentManager fm) {
@@ -115,11 +138,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new MapViewFragment();
-
+                return mMapViewFragment;
             } else {
-                mMainFragment = new FriendsFragment();
-                return mMainFragment;
+
+                return mFriendsFragment;
             }
         }
 

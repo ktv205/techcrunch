@@ -38,7 +38,7 @@ public class LeftDrawerFragment extends Fragment {
         final RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.fragment_left_drawer_recycle_view);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mLeftDrawerRecyclerAdapter = new LeftDrawerRecyclerAdapter(filldata());
+        mLeftDrawerRecyclerAdapter = new LeftDrawerRecyclerAdapter(getActivity(),filldata());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mLeftDrawerRecyclerAdapter);
 

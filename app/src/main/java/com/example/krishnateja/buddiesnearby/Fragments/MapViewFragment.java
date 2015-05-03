@@ -21,11 +21,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.example.krishnateja.buddiesnearby.Models.AppConstants;
 import com.example.krishnateja.buddiesnearby.Models.RequestParams;
+import com.example.krishnateja.buddiesnearby.Models.User;
 import com.example.krishnateja.buddiesnearby.R;
 import com.example.krishnateja.buddiesnearby.Services.ActivityRecognitionService;
 import com.example.krishnateja.buddiesnearby.Services.LocationUpdateService;
 import com.example.krishnateja.buddiesnearby.Services.SingleLocationUpdateService;
+import com.example.krishnateja.buddiesnearby.Utils.CommonFunctions;
+import com.example.krishnateja.buddiesnearby.Utils.SendDataAsyncTask;
+import com.example.krishnateja.buddiesnearby.Utils.SendLocationsAsyncTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -39,12 +44,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.example.krishnateja.buddiesnearby.Utils.CommonFunctions.getSharedPreferences;
 import static com.example.krishnateja.buddiesnearby.Utils.CommonFunctions.isMyServiceRunning;
 
 /**
@@ -186,7 +194,7 @@ public class MapViewFragment extends Fragment implements GoogleApiClient.Connect
         //register a alarm manager
         setUpStillLocationUpdateAlarmManager();
 
-        mGoogleMap=mMapView.getMap();
+        mGoogleMap = mMapView.getMap();
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.setLocationSource(this);
         buildGoogleApiClient();
@@ -308,6 +316,7 @@ public class MapViewFragment extends Fragment implements GoogleApiClient.Connect
 
     @Override
     public void onLocationChanged(Location arg0) {
+
         if (mOnLocationChangeListener != null && arg0 != null) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(arg0
                     .getLatitude(), arg0.getLongitude())));
@@ -315,6 +324,11 @@ public class MapViewFragment extends Fragment implements GoogleApiClient.Connect
             RequestParams helpParams = null, helpingParams = null;
             double lat = arg0.getLatitude();
             double lng = arg0.getLongitude();
+            String[] paths = {"safety", "public", "index.php", "updatelocation", getActivity().getSharedPreferences(AppConstants.AppSharedPref.NAME, Context.MODE_PRIVATE).getString(AppConstants.AppSharedPref.USER_ID, ""),
+                    String.valueOf(arg0.getLatitude()), String.valueOf(arg0.getLongitude()), "walking", "uh"};
+            RequestParams params = CommonFunctions.setParams(paths, mContext);
+            new SendLocationsAsyncTask(getActivity()).execute(params);
+
 
         }
     }
@@ -354,9 +368,9 @@ public class MapViewFragment extends Fragment implements GoogleApiClient.Connect
 
     // accessing views and button
     public void acessViews() {
-        mPeopleTextView = (TextView)mView.findViewById(R.id.text_people);
+        mPeopleTextView = (TextView) mView.findViewById(R.id.text_people);
         mPeopleTextView.setText("searching...");
-        mHelpButton = (Button)mView.findViewById(R.id.button_help);
+        mHelpButton = (Button) mView.findViewById(R.id.button_help);
         mHelpButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -438,7 +452,76 @@ public class MapViewFragment extends Fragment implements GoogleApiClient.Connect
     /*
      * filling map with users
      */
-    public void fillMap() {
+    public void fillMap(ArrayList<User> users) {
+        int count = users.size();
+        removeMarkers();
+        if (count == 0) {
+            if (mHelpFlag == ASK_HELP_FLAG) {
+                mPeopleTextView.setText("0 people around you");
+            } else if (mHelpFlag == ASKED_HELP_FLAG
+                    || mHelpFlag == HELPING_FLAG) {
+                mPeopleTextView.setText("0 people responded");
+            }
+        } else {
+            if (count == 1) {
+                if (mHelpFlag == ASK_HELP_FLAG) {
+                    mPeopleTextView.setText("1 person around you");
+                } else if (mHelpFlag == ASKED_HELP_FLAG
+                        || mHelpFlag == HELPING_FLAG) {
+                    mPeopleTextView.setText("0 people responded");
+                }
+            } else {
+                if (mHelpFlag == ASK_HELP_FLAG) {
+                    mPeopleTextView.setText(count + " persons around you");
+                } else if (mHelpFlag == ASKED_HELP_FLAG
+                        || mHelpFlag == HELPING_FLAG) {
+                    if (count - 1 == 1) {
+                        mPeopleTextView.setText("1" + " person responded");
+                    } else {
+                        mPeopleTextView.setText(count + " persons responded");
+                    }
+
+                }
+            }
+            for (User user : users) {
+                int color = user.get_colour();
+                if (color == AppConstants.Flags.USER_COLOR_FLAG) {
+                    Marker marker = mGoogleMap
+                            .addMarker(new MarkerOptions()
+                                    .position(
+                                            new LatLng(user.get_latitude(),
+                                                    user.get_longitude()))
+                                    .title("user")
+                                    .icon(BitmapDescriptorFactory
+                                            .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                    mMarkers.add(marker);
+                } else if (color == AppConstants.Flags.HELPER_COLOR_FLAG
+                        && !user.get_id().equals(mUserEmail)) {
+                    Marker marker = mGoogleMap
+                            .addMarker(new MarkerOptions()
+                                    .position(
+                                            new LatLng(user.get_latitude(),
+                                                    user.get_longitude()))
+                                    .title("helper")
+                                    .icon(BitmapDescriptorFactory
+                                            .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    mMarkers.add(marker);
+                } else if (color == AppConstants.Flags.VICTIM_COLOR_FLAG
+                        && !user.get_id().equals(mUserEmail)) {
+                    Marker marker = mGoogleMap
+                            .addMarker(new MarkerOptions()
+                                    .position(
+                                            new LatLng(user.get_latitude(),
+                                                    user.get_longitude()))
+                                    .title("victim")
+                                    .icon(BitmapDescriptorFactory
+                                            .defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                    mMarkers.add(marker);
+                }
+
+            }
+
+        }
 
 
     }
@@ -490,7 +573,7 @@ public class MapViewFragment extends Fragment implements GoogleApiClient.Connect
     }
 
     public boolean getActivityRecognitionStatus() {
-           return false;
+        return false;
     }
 
     private BroadcastReceiver mActivityBroadcastReceiver = new BroadcastReceiver() {
@@ -508,12 +591,12 @@ public class MapViewFragment extends Fragment implements GoogleApiClient.Connect
         Calendar calendar = Calendar.getInstance();
         Intent intent = new Intent(mContext, SingleLocationUpdateService.class);
         mPendingIntent = PendingIntent.getService(mContext, 0, intent, 0);
-        AlarmManager alarmManager = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 60 * 1000 * 30, mPendingIntent);
     }
 
     public void stopAlarmManager() {
-        AlarmManager alarmManager = (AlarmManager)mContext. getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(mPendingIntent);
     }
 
@@ -523,11 +606,24 @@ public class MapViewFragment extends Fragment implements GoogleApiClient.Connect
 
     public void buttonClickStuff(boolean animation, boolean markers, boolean accuracy, int helpFlag, String buttonText, String peopleText) {
         if (helpFlag == ASKED_HELP_FLAG) {
+            String[] paths = {"safety", "public", "index.php", ASK_HELP_PATH,
+                    getActivity().getSharedPreferences(AppConstants.AppSharedPref.NAME, Context.MODE_PRIVATE)
+                            .getString(AppConstants.AppSharedPref.USER_ID, "")};
+            mHelpFlag = ASKED_HELP_FLAG;
+            new SendDataAsyncTask().execute(CommonFunctions.setParams(paths, getActivity()));
 
         } else if (helpFlag == ASK_HELP_FLAG && mHelpFlag == HELPING_FLAG) {
-
+            String[] paths = {"safety", "public", "index.php", HELPED_PATH,
+                    getActivity().getSharedPreferences(AppConstants.AppSharedPref.NAME, Context.MODE_PRIVATE)
+                            .getString(AppConstants.AppSharedPref.USER_ID, "")};
+            new SendDataAsyncTask().execute(CommonFunctions.setParams(paths, getActivity()));
+            mHelpFlag = helpFlag;
         } else if (helpFlag == ASK_HELP_FLAG && mHelpFlag == ASKED_HELP_FLAG) {
-
+            String[] paths = {"safety", "public", "index.php", HELP_RECEIVED_PATH,
+                    getActivity().getSharedPreferences(AppConstants.AppSharedPref.NAME, Context.MODE_PRIVATE)
+                            .getString(AppConstants.AppSharedPref.USER_ID, "")};
+            new SendDataAsyncTask().execute(CommonFunctions.setParams(paths, getActivity()));
+            mHelpFlag = helpFlag;
         } else if (helpFlag == HELPING_FLAG) {
             mHelpFlag = helpFlag;
         }
@@ -550,6 +646,11 @@ public class MapViewFragment extends Fragment implements GoogleApiClient.Connect
         resetAccuracyOfLocation();
 
 
+    }
+
+    public void getData(ArrayList<User> users) {
+        Log.d(TAG, "getData");
+        fillMap(users);
     }
 
 
