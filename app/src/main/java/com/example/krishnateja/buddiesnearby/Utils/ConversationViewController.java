@@ -1,5 +1,6 @@
 package com.example.krishnateja.buddiesnearby.Utils;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -59,6 +60,9 @@ private Conversation activeConversation;
 //All messages
 private Hashtable<String, MessageView> allMessages;
 
+//keep the chat activity object
+private ChatActivity ma;
+
 public ConversationViewController(ChatActivity ma, LayerClient client) {
 
         //Cache off LayerClient
@@ -72,6 +76,7 @@ public ConversationViewController(ChatActivity ma, LayerClient client) {
 
         //Change the layout
         ma.setContentView(R.layout.activity_layer);
+        this.ma = ma;
 
         //Cache off gui objects
         sendButton = (Button) ma.findViewById(R.id.send);
@@ -106,7 +111,7 @@ private void sendButtonClicked(){
 
         //If there isn't, create a new conversation with those participants
         if(activeConversation == null){
-        activeConversation = layerClient.newConversation(ChatActivity.getAllParticipants());
+        activeConversation = layerClient.newConversation(ma.getAllParticipants());
         }
         }
 
@@ -126,7 +131,7 @@ private void sendMessage(String text) {
 
         //Formats the push notification that the other participants will receive
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("layer-push-message", ChatActivity.getUserID() + ": " + text);
+        metadata.put("layer-push-message", ChatActivity.getUserID(ma.getApplicationContext()) + ": " + text);
         message.setMetadata(metadata);
 
         //Sends the message
@@ -152,7 +157,8 @@ private Conversation getConversation(){
         if(activeConversation == null){
 
         Query query = Query.builder(Conversation.class)
-        .predicate(new Predicate(Conversation.Property.PARTICIPANTS, Predicate.Operator.EQUAL_TO, ChatActivity.getAllParticipants()))
+        .predicate(new Predicate(Conversation.Property.PARTICIPANTS, Predicate.Operator.EQUAL_TO,
+                ma.getAllParticipants()))
         .sortDescriptor(new SortDescriptor(Conversation.Property.CREATED_AT, SortDescriptor.Order.DESCENDING)).build();
 
         List<Conversation> results = layerClient.executeQuery(query, Query.ResultType.OBJECTS);
@@ -260,8 +266,9 @@ private void setTopBarColor(float red, float green, float blue){
         }
         }
 
-public static String getInitialMessage(){
-        return "Hey, everyone! This is your friend, " + ChatActivity.getUserID();
+public String getInitialMessage(){
+        return "Hey, everyone! This is your friend, " +
+                ChatActivity.getUserID(ma.getApplicationContext());
         }
 
 

@@ -87,7 +87,7 @@ public class MessageView {
     private Message.RecipientStatus getMessageStatus(Message msg) {
 
         //If we didn't send the message, we already know the status - we have read it
-        if (!msg.getSentByUserId().equalsIgnoreCase(ChatActivity.getUserID()))
+        if (!msg.getSentByUserId().equalsIgnoreCase(ChatActivity.getUserID(context)))
             return Message.RecipientStatus.READ;
 
         //Assume the message has been sent
@@ -99,7 +99,7 @@ public class MessageView {
 
             //Don't check the status of the current user
             String participant = ChatActivity.getAllParticipants().get(i);
-            if (participant.equalsIgnoreCase(ChatActivity.getUserID()))
+            if (participant.equalsIgnoreCase(ChatActivity.getUserID(context)))
                 continue;
 
             if (status == Message.RecipientStatus.SENT) {

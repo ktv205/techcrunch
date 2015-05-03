@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.krishnateja.buddiesnearby.Activities.ChatActivity;
+import com.example.krishnateja.buddiesnearby.Activities.DummyActivity;
 import com.example.krishnateja.buddiesnearby.Activities.MainActivity;
 import com.example.krishnateja.buddiesnearby.R;
 import com.example.krishnateja.buddiesnearby.Utils.CommonFuntions;
@@ -45,7 +47,7 @@ public class FacebookFragment extends Fragment {
             AccessToken accessToken=loginResult.getAccessToken();
             CommonFuntions.getUserDetails(accessToken,getActivity());
             CommonFuntions.getUserFriends(accessToken,getActivity());
-            getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+            getActivity().startActivity(new Intent(getActivity(), DummyActivity.class));
         }
 
         @Override

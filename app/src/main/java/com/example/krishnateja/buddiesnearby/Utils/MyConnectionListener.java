@@ -1,5 +1,7 @@
 package com.example.krishnateja.buddiesnearby.Utils;
 
+import android.content.Context;
+
 import com.example.krishnateja.buddiesnearby.Activities.ChatActivity;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.exceptions.LayerException;
@@ -12,7 +14,7 @@ public class MyConnectionListener implements LayerConnectionListener {
 
     private ChatActivity main_activity;
 
-    public MyConnectionListener(ChatActivity ma){
+    public MyConnectionListener(ChatActivity ma, Context context){
         //Cache off the main activity in order to perform callbacks
         main_activity = ma;
     }
