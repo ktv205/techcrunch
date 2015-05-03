@@ -20,4 +20,9 @@ public class AppConstants {
         public final static String activityType = "activityType";
         public final static String TYPE = "type";
     }
+    public static class LeftDrawerConstants{
+        public final static String SETTINGS="Settings";
+        public final static String LOGOUT="Logout";
+        public final static String FEEDBACK="Feedback";
+    }
 }

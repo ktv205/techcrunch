@@ -5,7 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.example.krishnateja.buddiesnearby.Models.LeftDrawerModel;
 import com.example.krishnateja.buddiesnearby.R;
 
 import java.util.ArrayList;
@@ -16,12 +19,13 @@ import java.util.HashMap;
  */
 public class LeftDrawerRecyclerAdapter extends RecyclerView.Adapter<LeftDrawerRecyclerAdapter.ViewHolder> {
 
-
+    private ArrayList<LeftDrawerModel> mLeftDrawerModelArrayList;
     public LeftDrawerRecyclerAdapter(Context context, ArrayList<String> data, HashMap<Integer, Integer> sections) {
 
     }
 
-    public LeftDrawerRecyclerAdapter() {
+    public LeftDrawerRecyclerAdapter(ArrayList<LeftDrawerModel> leftDrawerModelArrayList) {
+        mLeftDrawerModelArrayList=leftDrawerModelArrayList;
 
     }
 
@@ -37,21 +41,26 @@ public class LeftDrawerRecyclerAdapter extends RecyclerView.Adapter<LeftDrawerRe
 
     @Override
     public void onBindViewHolder(final LeftDrawerRecyclerAdapter.ViewHolder viewHolder, int i) {
+        viewHolder.textView.setText(mLeftDrawerModelArrayList.get(i).getName());
+        viewHolder.imageView.setImageResource(mLeftDrawerModelArrayList.get(i).getRes());
 
     }
 
     @Override
     public int getItemCount() {
-        return 5;
+        return mLeftDrawerModelArrayList.size();
 
     }
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+        TextView textView;
 
         public ViewHolder(View itemView, int type) {
             super(itemView);
-
+            imageView=(ImageView)itemView.findViewById(R.id.list_item_imageview);
+            textView=(TextView)itemView.findViewById(R.id.list_item_textview);
         }
 
     }
