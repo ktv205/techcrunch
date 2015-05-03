@@ -16,14 +16,22 @@ public class AppConstants {
         public static final String LAT = "lat";
         public static final String LNG = "lng";
         public static final String OFFSET = "offset";
+        public static final String PUBLIC = "";
+        public static final String INDEX = "";
     }
     public static class InAppConstants{
         public static final String FACEBOOK_TAG="facebook";
         public static final String FRIENDS = "friends";
+        public static final String LATITUDE = "latitude";
+        public static final String LONGITUDE = "longitude";
 
     }
     public static class AppSharedPref{
+        public static final String NAME="auth";
         public static final String USER_ID = "fb_user_id";
+        public static final String USER_NAME="fb_user_name";
+        public static final String USER_PIC="fb_user_pic";
+        public static final String USER_EMAIL="fb_user_email";
     }
     public static class ActivityRecognitionConstants{
         public final static String ENABLED = "enabled";

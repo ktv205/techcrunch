@@ -1,7 +1,6 @@
 package com.example.krishnateja.buddiesnearby.Activities;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,14 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.krishnateja.buddiesnearby.Models.AppConstants;
 import com.example.krishnateja.buddiesnearby.Models.User;
 import com.example.krishnateja.buddiesnearby.R;
-import com.example.krishnateja.buddiesnearby.Utils.CommonFuntions;
 import com.example.krishnateja.buddiesnearby.Utils.ConversationViewController;
 import com.example.krishnateja.buddiesnearby.Utils.MyAuthenticationListener;
 import com.example.krishnateja.buddiesnearby.Utils.MyConnectionListener;
 import com.layer.sdk.LayerClient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 

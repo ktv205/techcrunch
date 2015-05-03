@@ -45,7 +45,7 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import static com.example.krishnateja.buddiesnearby.Utils.CommonFuntions.isMyServiceRunning;
+import static com.example.krishnateja.buddiesnearby.Utils.CommonFunctions.isMyServiceRunning;
 
 /**
  * Created by krishnateja on 5/1/2015.

@@ -89,6 +89,7 @@
             android:name=".Activities.DummyActivity"
             android:label="@string/title_activity_dummy" >
         </activity>
+        <activity android:name=".Activities.ChatActivity"></activity>
     </application>
 
 </manifest>

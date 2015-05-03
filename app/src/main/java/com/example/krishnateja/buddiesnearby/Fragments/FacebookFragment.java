@@ -5,19 +5,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.krishnateja.buddiesnearby.Activities.ChatActivity;
 import com.example.krishnateja.buddiesnearby.Activities.DummyActivity;
-import com.example.krishnateja.buddiesnearby.Activities.MainActivity;
+
 import com.example.krishnateja.buddiesnearby.Models.AppConstants;
 import com.example.krishnateja.buddiesnearby.Models.RequestParams;
+
 import com.example.krishnateja.buddiesnearby.R;
-import com.example.krishnateja.buddiesnearby.Utils.CommonFuntions;
+import com.example.krishnateja.buddiesnearby.Utils.CommonFunctions;
 import com.example.krishnateja.buddiesnearby.Utils.HttpManager;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -27,7 +26,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphRequestBatch;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -51,7 +49,7 @@ public class FacebookFragment extends Fragment {
         public void onSuccess(LoginResult loginResult) {
             Log.d(TAG,"success to login");
             AccessToken accessToken=loginResult.getAccessToken();
-            CommonFuntions.getUserDetails(accessToken,getActivity());
+            CommonFunctions.getUserDetails(accessToken, getActivity());
            // CommonFuntions.getUserFriends(accessToken,getActivity());
             GraphRequestBatch batch = new GraphRequestBatch(
                     GraphRequest.newMyFriendsRequest(
@@ -77,7 +75,7 @@ public class FacebookFragment extends Fragment {
                                             RequestParams params=new RequestParams();
                                             params.setURI(url.toString());
                                             params.setMethod(AppConstants.ServerVariables.METHOD);
-                                            HttpManager.sendUserData(params);
+                                           // HttpManager.sendUserData(params);
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
@@ -89,6 +87,7 @@ public class FacebookFragment extends Fragment {
                                         JSONObject jsonObject = response.getJSONObject();
 
                                         System.out.println("getFriendsData onCompleted : jsonObject " + jsonObject);
+
                                         JSONObject summary = jsonObject.getJSONObject("summary");
                                         System.out.println("getFriendsData onCompleted : summary total_count - " + summary.getString("total_count"));
                                     } catch (Exception e) {
