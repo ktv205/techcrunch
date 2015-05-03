@@ -77,6 +77,8 @@ public class CommonFuntions {
                     public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
                         if(jsonArray!=null){
                             jsonString[0] =jsonArray.toString();
+                            Log.d(TAG,jsonString[0]);
+                            storeFriendsUserId(jsonString[0]);
                             Log.d(TAG, jsonArray.toString());
                             RequestParams params=CreateSendRequestParams(jsonString[0]);
                             new SendDataAsyncTask().execute(params);
@@ -112,6 +114,27 @@ public class CommonFuntions {
             }
         }
         return running;
+    }
+
+    public static void storeFriendsUserId(String jsonArray){
+        try {
+            JSONArray array=new JSONArray(jsonArray);
+            JSONObject object= (JSONObject) array.get(0);
+
+            JSONObject friends=(JSONObject)object.getJSONObject("friends");
+            JSONObject paging=friends.getJSONObject("paging");
+            String url=paging.getString("next");
+            RequestParams params=new RequestParams();
+            params.setMethod("GET");
+            params.setURI(url);
+            params.setProtocol("https");
+            Log.d(TAG,HttpManager.sendUserData(params));
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 

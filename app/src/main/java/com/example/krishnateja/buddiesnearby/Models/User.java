@@ -30,6 +30,11 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    public User() {
+
+    }
+
     @Override
     public int describeContents() {
         return 0;

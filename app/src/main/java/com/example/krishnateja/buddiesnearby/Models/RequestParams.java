@@ -12,6 +12,15 @@ public class RequestParams  {
     private String URI;
     private String method;
     private Map<String, String> params = new HashMap<String, String>();
+    private String protocol="http";
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
 
     public String getURI() {
         return URI;
