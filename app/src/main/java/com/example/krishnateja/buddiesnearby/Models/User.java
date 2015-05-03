@@ -83,4 +83,5 @@ public class User implements Parcelable {
     public void set_colour(int _colour) {
         this._colour = _colour;
     }
+
 }
