@@ -38,7 +38,7 @@ public class MyAuthenticationListener implements LayerAuthenticationListener {
     // - The Nonce returned in this function will expire after 10 minutes, after which you will need
     //   to call
     public void onAuthenticationChallenge(final LayerClient client, final String nonce) {
-        final String mUserId = ChatActivity.getUserID(context);
+        final String mUserId = main_activity.getUserID();
 
         //Note: This Layer Authentication Service is for TESTING PURPOSES ONLY
         //When going into production, you will need to create your own web service

@@ -163,10 +163,10 @@ public class ChatActivity extends AppCompatActivity {
     // create a new one, as long as all user ids are unique. For demonstration purposes, we are
     // making the assumption that this App will be run simultaneously on a Simulator and on a
     // Device, and assign the User ID based on the runtime environment.
-    public static String getUserID(Context context){
+    public String getUserID(){
         //if(CommonFuntions.fb_user_id == null)
-            return context.getSharedPreferences(AppConstants.AppSharedPref.USER_ID,
-                    context.MODE_PRIVATE).toString();
+            return getApplicationContext().getSharedPreferences(AppConstants.AppSharedPref.USER_ID,
+                    Context.MODE_PRIVATE).toString();
     }
 
     //By default, create a conversationView between these  participants
