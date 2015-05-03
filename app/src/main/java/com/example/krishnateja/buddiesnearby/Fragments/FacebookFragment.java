@@ -10,13 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.krishnateja.buddiesnearby.Activities.HelperActivity;
 import com.example.krishnateja.buddiesnearby.Models.AppConstants;
 import com.example.krishnateja.buddiesnearby.Models.RequestParams;
 
 import com.example.krishnateja.buddiesnearby.R;
 import com.example.krishnateja.buddiesnearby.Utils.CommonFunctions;
-import com.example.krishnateja.buddiesnearby.Utils.HttpManager;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -106,7 +104,6 @@ public class FacebookFragment extends Fragment {
 
             Bundle parameters = new Bundle();
             parameters.putString("fields", "id,name,link,picture");
-
 
         }
 

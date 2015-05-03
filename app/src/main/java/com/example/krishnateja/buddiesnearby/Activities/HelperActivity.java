@@ -64,6 +64,9 @@ public class HelperActivity extends AppCompatActivity implements
             } else {
                 registerInBackground();
                 startGoogleApiClient();
+
+                //registerInBackground();
+                //startGoogleApiClient();
             }
         }
 

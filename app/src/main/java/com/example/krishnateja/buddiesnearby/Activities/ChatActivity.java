@@ -32,7 +32,7 @@ public class ChatActivity extends AppCompatActivity {
     // an invalid Project Number is used here, the Layer SDK will function, but
     // users will not receive Notifications when the app is closed or in the
     // background).
-    public static String GCM_Project_Number = "400221714187";
+    public static String GCM_Project_Number = "564939779654";
 
 
     //Global variables used to manage the Layer Client and the conversations in this app
@@ -48,6 +48,9 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //set application context to get the FB ID stored in shared prefs
+        userArrayList = getIntent().getParcelableArrayListExtra(AppConstants.InAppConstants.FRIENDS);
+
         //If we haven't created a LayerClient, show the loading splash screen
         if(layerClient == null)
             setContentView(R.layout.activity_loading);
@@ -60,9 +63,6 @@ public class ChatActivity extends AppCompatActivity {
 
         if(authenticationListener == null)
             authenticationListener = new MyAuthenticationListener(this,context);
-
-        //set application context to get the FB ID stored in shared prefs
-        userArrayList = getIntent().getParcelableArrayListExtra(AppConstants.InAppConstants.FRIENDS);
     }
 
     //onResume is called on App Start and when the app is brought to the foreground
@@ -162,8 +162,8 @@ public class ChatActivity extends AppCompatActivity {
     // Device, and assign the User ID based on the runtime environment.
     public String getUserID(){
         //if(CommonFuntions.fb_user_id == null)
-            return getApplicationContext().getSharedPreferences(AppConstants.AppSharedPref.USER_ID,
-                    Context.MODE_PRIVATE).toString();
+            return getApplicationContext().getSharedPreferences(AppConstants.AppSharedPref.NAME,
+                    Context.MODE_PRIVATE).getString(AppConstants.AppSharedPref.USER_ID, null);
     }
 
     //By default, create a conversationView between these  participants
@@ -173,6 +173,9 @@ public class ChatActivity extends AppCompatActivity {
             ids.add(u.get_id());
         }
         return ids;
+    }
+    public List<User> getParticipants(){
+        return userArrayList;
     }
     //Once the user has successfully authenticated, begin the conversationView
     public void onUserAuthenticated(){
@@ -185,5 +188,22 @@ public class ChatActivity extends AppCompatActivity {
                 layerClient.registerTypingIndicator(conversationView);
             }
         }
+    }
+
+    public int removeUser(String tag) {
+        int i = 0;
+        for(User u:userArrayList){
+            if(u.get_id().equals(tag)){
+                break;
+            }
+            i++;
+        }
+        userArrayList.remove(i);
+        return userArrayList.size();
+    }
+
+    public String getUserName() {
+        return getApplicationContext().getSharedPreferences(AppConstants.AppSharedPref.NAME,
+                Context.MODE_PRIVATE).getString(AppConstants.AppSharedPref.USER_NAME, null);
     }
 }
