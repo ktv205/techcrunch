@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.example.krishnateja.buddiesnearby.Activities.ChatActivity;
 import com.example.krishnateja.buddiesnearby.Activities.DummyActivity;
 import com.example.krishnateja.buddiesnearby.Activities.MainActivity;
+import com.example.krishnateja.buddiesnearby.Models.User;
 import com.example.krishnateja.buddiesnearby.R;
 import com.example.krishnateja.buddiesnearby.Utils.CommonFuntions;
 import com.facebook.AccessToken;
@@ -62,6 +63,7 @@ public class FacebookFragment extends Fragment {
                                     try {
                                         JSONObject jsonObject = response.getJSONObject();
                                         System.out.println("getFriendsData onCompleted : jsonObject " + jsonObject);
+
                                         JSONObject summary = jsonObject.getJSONObject("summary");
                                         System.out.println("getFriendsData onCompleted : summary total_count - " + summary.getString("total_count"));
                                     } catch (Exception e) {
