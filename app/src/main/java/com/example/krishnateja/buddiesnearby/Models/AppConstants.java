@@ -4,6 +4,19 @@ package com.example.krishnateja.buddiesnearby.Models;
  * Created by krishnateja on 5/2/2015.
  */
 public class AppConstants {
+
+    public static class ServerVariables{
+        public static final String SCHEME = "http";
+        public static final String AUTHORITY = "52.4.108.84";
+        public static final String PATH = "bigapple";
+        public static final String FILE = "bigapple.php";
+        public static final String METHOD = "GET";
+        public static final String GETMTAVARIABLE = "MTA";
+        public static final String GETCITIVARIABLE = "citi";
+        public static final String LAT = "lat";
+        public static final String LNG = "lng";
+        public static final String OFFSET = "offset";
+    }
     public static class InAppConstants{
         public static final String FACEBOOK_TAG="facebook";
         public static final String FRIENDS = "friends";

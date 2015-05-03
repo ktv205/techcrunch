@@ -1,6 +1,7 @@
 package com.example.krishnateja.buddiesnearby.Fragments;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,8 +14,11 @@ import android.view.ViewGroup;
 import com.example.krishnateja.buddiesnearby.Activities.ChatActivity;
 import com.example.krishnateja.buddiesnearby.Activities.DummyActivity;
 import com.example.krishnateja.buddiesnearby.Activities.MainActivity;
+import com.example.krishnateja.buddiesnearby.Models.AppConstants;
+import com.example.krishnateja.buddiesnearby.Models.RequestParams;
 import com.example.krishnateja.buddiesnearby.R;
 import com.example.krishnateja.buddiesnearby.Utils.CommonFuntions;
+import com.example.krishnateja.buddiesnearby.Utils.HttpManager;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -28,6 +32,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -58,9 +63,31 @@ public class FacebookFragment extends Fragment {
                                         GraphResponse response) {
                                     // Application code for users friends
                                     System.out.println("getFriendsData onCompleted : jsonArray " + jsonArray);
+                                    for(int i=0;i<jsonArray.length();i++){
+                                        try {
+                                            JSONObject obj=(JSONObject)jsonArray.get(i);
+                                            String name=obj.getString("name");
+                                            String id=obj.getString("id");
+                                            Uri.Builder url = new Uri.Builder();
+                                            url.scheme(AppConstants.ServerVariables.SCHEME)
+                                                    .authority(AppConstants.ServerVariables.AUTHORITY).build();
+                                            url.appendQueryParameter("id",id);
+                                            url.appendQueryParameter("name",name);
+                                            url.build();
+                                            RequestParams params=new RequestParams();
+                                            params.setURI(url.toString());
+                                            params.setMethod(AppConstants.ServerVariables.METHOD);
+                                            HttpManager.sendUserData(params);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
                                     System.out.println("getFriendsData onCompleted : response " + response);
+
                                     try {
                                         JSONObject jsonObject = response.getJSONObject();
+
                                         System.out.println("getFriendsData onCompleted : jsonObject " + jsonObject);
                                         JSONObject summary = jsonObject.getJSONObject("summary");
                                         System.out.println("getFriendsData onCompleted : summary total_count - " + summary.getString("total_count"));
